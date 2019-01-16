@@ -81,7 +81,14 @@ function apple_news_get_plugin_data() {
 	return get_plugin_data( plugin_dir_path( __FILE__ ) . '/apple-news.php' );
 }
 
-new Admin_Apple_News();
+/**
+ * Instantiates the Admin Apple News object.
+ */
+function apple_news_load_admin()
+{
+	new Admin_Apple_News();
+}
+add_action( 'plugins_loaded', 'apple_news_load_admin' );
 
 /**
  * Reports whether an export is currently happening.
