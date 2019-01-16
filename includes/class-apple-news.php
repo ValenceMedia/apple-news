@@ -8,6 +8,9 @@
  * @since 0.2.0
  */
 
+// Include Settings class dependency
+require_once plugin_dir_path( __FILE__ ) . '../admin/class-admin-apple-settings.php';
+
 /**
  * Base plugin class with core plugin information and shared functionality
  * between frontend and backend plugin classes.
@@ -183,11 +186,22 @@ class Apple_News {
 
 		// Look up required information in plugin settings, if necessary.
 		if ( null === self::$_is_initialized ) {
-			$settings              = get_option( self::$option_name );
-			self::$_is_initialized = ( ! empty( $settings['api_channel'] )
-				&& ! empty( $settings['api_key'] )
-				&& ! empty( $settings['api_secret'] )
+			// first, grab settings with settings class (in case the settings are filtered)
+			$settings = new Admin_Apple_Settings();
+			$settings = $settings->fetch_settings();
+
+			self::$_is_initialized = ( ! empty( $settings->api_channel )
+				&& ! empty( $settings->api_key )
+				&& ! empty( $settings->api_secret )
 			);
+
+			if ( ! self::$_is_initialized ) {
+				$settings = get_option( self::$option_name );
+				self::$_is_initialized = ( ! empty( $settings['api_channel'] )
+					&& ! empty( $settings['api_key'] )
+					&& ! empty( $settings['api_secret'] )
+				);
+			}
 		}
 
 		return self::$_is_initialized;
