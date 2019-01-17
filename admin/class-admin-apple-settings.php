@@ -150,6 +150,7 @@ class Admin_Apple_Settings extends Apple_News {
 		}
 
 		$sections = $this->sections;
+		$env_settings = _bm_get_config('apple_news', []);
 		include plugin_dir_path( __FILE__ ) . 'partials/page-options.php';
 	}
 
