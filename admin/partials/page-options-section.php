@@ -22,16 +22,35 @@
 						<span class="label-name"><?php echo esc_html( $setting_meta['label'] ); ?></span>
 					<?php endif; ?>
 					<?php
-						echo wp_kses(
-							$section->render_field(
-								array(
-									$setting_name,
-									$setting_meta['default'],
-									$setting_meta['callback'],
-								)
-							),
-							Admin_Apple_Settings_Section::$allowed_html
-						);
+						/**
+						 * make the settings unchangeable in admin if they're set in the environment. right now we're only
+						 * defining strings, so this will only expect strings - if we're going to do other types we should
+						 * update this accordingly.
+						 */
+						if (in_array($setting_name, array_keys($env_settings))) {
+							?>
+							<span class="env-value">
+								<code>
+									<?php 
+										if ($setting_meta['type'] == 'password') {
+											echo "••••••••••";
+										} else {
+											echo $env_settings[$setting_name];
+										}
+									?></code> <i>(set in environment)</i></span>
+							<?php
+						} else {
+							echo wp_kses(
+								$section->render_field(
+									array(
+										$setting_name,
+										$setting_meta['default'],
+										$setting_meta['callback'],
+									)
+								),
+								Admin_Apple_Settings_Section::$allowed_html
+							);
+						}
 					?>
 				</label>
 					<?php do_action( 'apple_news_after_setting', $setting_name, $setting_meta ); ?>
